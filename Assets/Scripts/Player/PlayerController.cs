@@ -1,14 +1,20 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement")]
+    public float initialSpeed = 5f;
     public float speed = 5f;
+    public float dashSpeed = 10f;
     public float jumpForce = 80f;
     public LayerMask groundLayerMask;
     private Vector2 curMovementInput;
 
+    [Header("Camera")]
     public Transform cameraContainer;
     public float minXRot;
     public float maxXRot;
@@ -17,28 +23,37 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 mouseDelta;
 
-    private float timeSinceLastDash;
+    private float timeSinceLastDash = -12f;
+    public float dashCooltime = 12f;
 
     private Rigidbody _rigidbody;
 
-    private void Start()
+    private bool canLook;
+
+    public event Action option;
+
+    private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        speed = initialSpeed;
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 
     private void FixedUpdate()
     {
         Move();
-        if(timeSinceLastDash > 0)
-        {
-            timeSinceLastDash -= Time.deltaTime;
-        }
     }
 
     private void LateUpdate()
     {
-        CameraLook();
+        if (canLook)
+        {
+            CameraLook();
+        }
     }
 
     public void OnMoveInput(InputAction.CallbackContext context)
@@ -97,26 +112,44 @@ public class PlayerController : MonoBehaviour
         {
             if (Physics.Raycast(rays[i], 0.1f, groundLayerMask))
             {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public void OnDashInput(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Started && CanDash())
         {
-            Dash();
+            timeSinceLastDash = Time.time;
+            StartCoroutine(Dash());
         }
     }
     private bool CanDash()
     {
-        return timeSinceLastDash == 0;
+        return Time.time - timeSinceLastDash > dashCooltime;
     }
 
-    private void Dash()
+
+    private IEnumerator Dash()
     {
-        
+        speed = dashSpeed;
+        yield return new WaitForSeconds(5f);
+        speed = initialSpeed;
+    }
+    public void OnOption(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Started)
+        {
+            option?.Invoke();
+            Toggle();
+        }
+    }
+    private void Toggle()
+    {
+        bool islocked = (Cursor.lockState == CursorLockMode.Locked);
+        Cursor.lockState = islocked ? CursorLockMode.None : CursorLockMode.Locked;  
+        canLook = !islocked;
     }
 }

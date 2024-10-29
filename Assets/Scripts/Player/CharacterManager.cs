@@ -26,7 +26,14 @@ public class CharacterManager : MonoBehaviour
     }
     private void Awake()
     {
-        instance = this;
-        DontDestroyOnLoad(gameObject);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            if(instance != this) Destroy(gameObject);
+        }
     }
 }
