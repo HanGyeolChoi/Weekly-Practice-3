@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     public float initialSpeed = 5f;
     public float speed = 5f;
     public float dashSpeed = 10f;
+    public float dashMana = 30f;
+    public float dashDuration = 5f;
+    public float dashCooltime = 12f;
     public float jumpForce = 80f;
     public LayerMask groundLayerMask;
     private Vector2 curMovementInput;
@@ -23,13 +26,12 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 mouseDelta;
 
-    private float timeSinceLastDash = -12f;
-    public float dashCooltime = 12f;
+    private float timeSinceLastDash = float.MinValue;
 
     private Rigidbody _rigidbody;
 
-    private bool canLook;
-
+    private bool canLook = true;
+    public event Action<float> UseDash;
     public event Action option;
 
     private void Awake()
@@ -134,9 +136,12 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Dash()
     {
-        speed = dashSpeed;
-        yield return new WaitForSeconds(5f);
-        speed = initialSpeed;
+        if (CharacterManager.Instance.Player.condition.UseMana(dashMana))
+        {
+            speed = dashSpeed;
+            yield return new WaitForSeconds(dashDuration);
+            speed = initialSpeed;
+        }
     }
     public void OnOption(InputAction.CallbackContext context)
     {

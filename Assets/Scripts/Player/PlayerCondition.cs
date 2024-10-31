@@ -12,8 +12,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     private Condition stamina {  get { return uiCondition.stamina; } }
     private Condition mana { get { return uiCondition.mana; } }
 
-    //public event Action OnDie;
-
+    public event Action OnTakeDamage;
 
     private void Update()
     {
@@ -64,6 +63,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public void TakeDamage(float amount)
     {
+        OnTakeDamage?.Invoke();
         health.Add(-amount);
     }
 }

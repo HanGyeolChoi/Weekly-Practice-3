@@ -4918,6 +4918,7 @@ GameObject:
   - component: {fileID: 2134953936736673396}
   - component: {fileID: 4582220256528922062}
   - component: {fileID: -8422559022164366266}
+  - component: {fileID: 3133495824071869198}
   m_Layer: 0
   m_Name: CampFire
   m_TagString: Untagged
@@ -5003,3 +5004,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad4eac42e47dc3448ad640205600b69c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 5
+  damageRate: 10
+--- !u!65 &3133495824071869198
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4207895345260042315}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0856155, y: 1.2596014, z: 0.86354613}
+  m_Center: {x: 0.06976879, y: 0.62314546, z: 0.016719997}
